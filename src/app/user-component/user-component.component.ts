@@ -13,8 +13,10 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
   styleUrls: ['./user-component.component.scss']
 })
 export class UserComponentComponent implements AfterViewInit {
+  searchStr = '';
   data: User[];
-  displayedColumns: string[] = ['id', 'userName', 'name', 'age', 'gender'];
+  selected: string[];
+  displayedColumns: string[] = ['number', 'id', 'userName', 'name', 'age', 'gender'];
   userHttpService: UserHttpService | null;
   resultsLength = 0;
   isLoadingResults = true;
@@ -22,6 +24,7 @@ export class UserComponentComponent implements AfterViewInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   constructor(private http: HttpClient) {
+    this.selected = new Array<string>();
   }
 
   // ngOnInit() {
@@ -41,7 +44,7 @@ export class UserComponentComponent implements AfterViewInit {
         startWith({}),
         switchMap(() => {
           this.isLoadingResults = true;
-          return this.userHttpService.SearchUser(this.paginator.pageSize, this.paginator.pageIndex, '');
+          return this.userHttpService.SearchUser(this.paginator.pageSize, this.paginator.pageIndex, this.searchStr);
         }),
         map(data => {
           // Flip flag to show that loading has finished.
@@ -56,8 +59,41 @@ export class UserComponentComponent implements AfterViewInit {
           this.isRateLimitReached = true;
           return observableOf([]);
         })
-        ).subscribe(data => {
-          this.data = data;
+      ).subscribe(data => {
+        this.data = data;
+      });
+  }
+  Search() {
+    this.userHttpService.SearchUser(this.paginator.pageSize, this.paginator.pageIndex, this.searchStr).subscribe(data => {
+      this.resultsLength = data.total_count;
+      this.data = data.payload;
+    });
+  }
+  mapstr(val) {
+    this.searchStr = val;
+  }
+  clickCheck(event, id: string) {
+    if (event.target.checked) {
+      this.selected.push(id);
+      return;
+    } else {
+      this.selected = this.selected.filter(s => s !== id);
+    }
+  }
+  delete() {
+    
+    if (this.selected.length > 0) {
+     
+        const href = 'https://localhost:44356/api/user';
+        this.selected.forEach(id => {
+          const requestUrl =
+            `${href}/${id}`;
+          this.http.delete(requestUrl).subscribe(s=>{
+            this.selected = new Array<string>();
+            this.Search();
+          });
         });
+     
+    }
   }
 }
