@@ -6,8 +6,6 @@ import { MatTableDataSource, MatSort } from '@angular/material';
 import { MatPaginator } from '@angular/material/paginator';
 import { merge, Observable, of as observableOf } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
-
 
 @Component({
   selector: 'app-user-component',
@@ -19,6 +17,7 @@ import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 })
 export class UserComponentComponent implements AfterViewInit {
+
   searchStr = '';
   data: User[];
   selected: string[];
@@ -28,6 +27,12 @@ export class UserComponentComponent implements AfterViewInit {
   isLoadingResults = true;
   isRateLimitReached = false;
   currentUser:User;
+
+  nameCreate:string;
+  ageCreate:number;
+  genderCreate:string;
+  userNameCreate:string;
+
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
@@ -67,6 +72,14 @@ export class UserComponentComponent implements AfterViewInit {
   EditClick(user:User){
     this.currentUser=user;
   }
+
+  Create(){
+    this.userHttpService.AddUser(this.nameCreate,this.userNameCreate,this.ageCreate,this.genderCreate).subscribe(x=>{
+      
+    });
+    this.Search();
+  }
+
 
   Search() {
     this.userHttpService.SearchUser(this.paginator.pageSize, this.paginator.pageIndex, this.searchStr).subscribe(data => {
