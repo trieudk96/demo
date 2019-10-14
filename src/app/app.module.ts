@@ -8,6 +8,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { UserComponentComponent } from './user-component/user-Component.Component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatProgressSpinnerModule } from '@angular/material';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { MatProgressSpinnerModule } from '@angular/material';
     MatPaginatorModule,
     BrowserAnimationsModule,
     MatProgressSpinnerModule,
-    MatSortModule
+    MatSortModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]
