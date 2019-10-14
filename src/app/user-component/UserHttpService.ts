@@ -6,11 +6,42 @@ import { HttpClient } from '@angular/common/http';
 
 export class UserHttpService {
   constructor(private httpClient: HttpClient) { }
+
+  private href = 'https://localhost:44356/api/user';
+
   SearchUser(pageSize: number, pageIndex: number, searchStr: string): Observable<ResponseApi<User>> {
-    const href = 'https://localhost:44356/api/user';
+    
     const requestUrl =
-      `${href}?pageSize=${pageSize}&pageIndex=${pageIndex + 1}&searchString=${searchStr}`;
+      `${this.href}?pageSize=${pageSize}&pageIndex=${pageIndex + 1}&searchString=${searchStr}`;
     return this.httpClient.get<ResponseApi<User>>(requestUrl);
   }
- 
+  
+  AddUser(name:string, username:string, age:number,gender:string){
+    const body= 
+    `{
+      "id": 0,
+      "userName": "${username}",
+      "name": "${name}",
+      "age": ${age},
+      "gender": "${gender}" 
+    }`;
+    return this.httpClient.post<User>(this.href,body);
+  }
+
+  DeleteUser(id:number){
+    const requestUrl = `${this.href}?id=${id}`;
+    return this.httpClient.delete<boolean>(this.href);
+  }
+
+  UpdateUser(id:number,name:string, username:string, age:number,gender:string){
+    const body= 
+    `{
+      "id": ${id},
+      "userName": "${username}",
+      "name": "${name}",
+      "age": ${age},
+      "gender": "${gender}" 
+    }`;
+    return this.httpClient.put<User>(this.href,body);
+  }
 }

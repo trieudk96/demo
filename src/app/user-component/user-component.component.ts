@@ -7,25 +7,34 @@ import { MatPaginator } from '@angular/material/paginator';
 import { merge, Observable, of as observableOf } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
+
+
 @Component({
   selector: 'app-user-component',
   templateUrl: './user-component.component.html',
-  styleUrls: ['./user-component.component.scss']
+  styleUrls: [
+    './user-component.component.scss',
+  ],
+
+
 })
 export class UserComponentComponent implements AfterViewInit {
   searchStr = '';
   data: User[];
   selected: string[];
-  displayedColumns: string[] = ['number', 'id', 'userName', 'name', 'age', 'gender'];
+  displayedColumns: string[] = ['number', 'id', 'userName', 'name', 'age', 'gender','action'];
   userHttpService: UserHttpService | null;
   resultsLength = 0;
   isLoadingResults = true;
   isRateLimitReached = false;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
+
   constructor(private http: HttpClient) {
     this.selected = new Array<string>();
   }
+
+
 
   // ngOnInit() {
   //   // this.displayedColumns = this.columnNames.map(x => x.id);
@@ -81,9 +90,7 @@ export class UserComponentComponent implements AfterViewInit {
     }
   }
   delete() {
-    
     if (this.selected.length > 0) {
-     
         const href = 'https://localhost:44356/api/user';
         this.selected.forEach(id => {
           const requestUrl =
@@ -93,7 +100,20 @@ export class UserComponentComponent implements AfterViewInit {
             this.Search();
           });
         });
-     
     }
   }
+
+  // deleteOne() {
+  //   if (this.selected.length > 0) {
+  //       const href = 'https://localhost:44356/api/user';
+  //       this.selected.forEach(id => {
+  //         const requestUrl =
+  //           `${href}/${id}`;
+  //         this.http.delete(requestUrl).subscribe(s=>{
+  //           this.selected = new Array<string>();
+  //           this.Search();
+  //         });
+  //       });
+  //   }
+  // }
 }
