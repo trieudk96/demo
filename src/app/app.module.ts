@@ -5,17 +5,20 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { UserComponentComponent } from './user-component/user-Component.Component';
+import { UserComponentComponent } from './user-component/user-component.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatProgressSpinnerModule } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { NotifierModule } from 'angular-notifier';
+import { ChartComponent } from './chart/chart.component';
+import { ChartModule } from 'angular-highcharts';
 
 @NgModule({
   declarations: [
     AppComponent,
-    UserComponentComponent
+    UserComponentComponent,
+    ChartComponent
   ],
   imports: [
     BrowserModule,
@@ -28,7 +31,8 @@ import { NotifierModule } from 'angular-notifier';
     MatSortModule,
     NgbModule,
     FormsModule,
-    NotifierModule
+    NotifierModule,
+    ChartModule
   ],
   providers: [],
   bootstrap: [AppComponent]
