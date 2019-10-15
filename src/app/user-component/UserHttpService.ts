@@ -27,10 +27,6 @@ export class UserHttpService {
     return this.httpClient.post<User>(request, body);
   }
 
-  DeleteUser(id: number) {
-    const requestUrl = `${this.href}?id=${id}`;
-    return this.httpClient.delete<boolean>(this.href);
-  }
 
   UpdateUser(id: number, name: string, username: string, age: number, gender: string ) {
     const body =
@@ -41,6 +37,7 @@ export class UserHttpService {
       "age": ${age},
       "gender": "${gender}"
     }`;
-    return this.httpClient.put<User>(this.href, body);
+    const request = `${this.href}?id=${id}&name=${name}&userName=${username}&age=${age}&gender=${gender}`;
+    return this.httpClient.put<User>(request, body);
   }
 }

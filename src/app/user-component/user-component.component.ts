@@ -6,12 +6,13 @@ import { MatTableDataSource, MatSort } from '@angular/material';
 import { MatPaginator } from '@angular/material/paginator';
 import { merge, Observable, of as observableOf } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-user-component',
   templateUrl: './user-component.component.html',
   styleUrls: [
-    './user-component.component.scss',
+    './user-component.component.scss'
   ],
 
 
@@ -28,6 +29,7 @@ export class UserComponentComponent implements AfterViewInit {
   isRateLimitReached = false;
   currentUser:User;
 
+  idCreate:number;
   nameCreate:string;
   ageCreate:number;
   genderCreate:string;
@@ -36,7 +38,7 @@ export class UserComponentComponent implements AfterViewInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,private notifierService: NotifierService) {
     this.selected = new Array<string>();
   }
 
@@ -69,17 +71,42 @@ export class UserComponentComponent implements AfterViewInit {
       });
   }
 
-  EditClick(user:User){
-    this.currentUser=user;
-  }
-
   Create(){
     this.userHttpService.AddUser(this.nameCreate,this.userNameCreate,this.ageCreate,this.genderCreate).subscribe(x=>{
-      
+      this.Search();
+      this.nameCreate = '';
+      this.userNameCreate = '';
+      this.ageCreate = null;
+      this.genderCreate = '';
+      // this.notifierService.notify( 'success', 'Your user has been created succesfully!' );
     });
-    this.Search();
   }
 
+  
+  Update(){
+    this.userHttpService.UpdateUser(this.idCreate,this.nameCreate,this.userNameCreate,this.ageCreate,this.genderCreate).subscribe(x=>{
+      this.Search();
+      this.CancelModal();
+      // this.notifierService.notify( 'success', 'Your user has been update succesfully!' );
+    });
+  }
+
+
+  EditClick(id: number, name: string, username: string, age: number, gender: string ){
+    this.idCreate = id;
+    this.nameCreate = name;
+    this.userNameCreate = username;
+    this.ageCreate = age;
+    this.genderCreate = gender;
+  }
+
+  CancelModal(){
+    this.idCreate = null;
+    this.nameCreate = '';
+    this.userNameCreate = '';
+    this.ageCreate = null;
+    this.genderCreate = '';
+  }
 
   Search() {
     this.userHttpService.SearchUser(this.paginator.pageSize, this.paginator.pageIndex, this.searchStr).subscribe(data => {
@@ -102,8 +129,7 @@ export class UserComponentComponent implements AfterViewInit {
     if (this.selected.length > 0) {
         const href = 'https://localhost:44356/api/user';
         this.selected.forEach(id => {
-          const requestUrl =
-            `${href}/${id}`;
+          const requestUrl = `${href}/${id}`;
           this.http.delete(requestUrl).subscribe(s=>{
             this.selected = new Array<string>();
             this.Search();
@@ -111,18 +137,4 @@ export class UserComponentComponent implements AfterViewInit {
         });
     }
   }
-
-  // deleteOne() {
-  //   if (this.selected.length > 0) {
-  //       const href = 'https://localhost:44356/api/user';
-  //       this.selected.forEach(id => {
-  //         const requestUrl =
-  //           `${href}/${id}`;
-  //         this.http.delete(requestUrl).subscribe(s=>{
-  //           this.selected = new Array<string>();
-  //           this.Search();
-  //         });
-  //       });
-  //   }
-  // }
 }
